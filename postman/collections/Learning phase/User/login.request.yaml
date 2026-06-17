@@ -1,0 +1,14 @@
+$kind: http-request
+name: login
+url: "{{server}}/users/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"username\":\"jawad\",\r
+
+    \    \"password\":\"123\"\r
+
+    }"
+order: 4183016615262546

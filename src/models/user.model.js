@@ -1,6 +1,6 @@
 import mongoose, {Schema} from 'mongoose'
 import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 
 const userSchema=new Schema(
     {
@@ -48,10 +48,11 @@ const userSchema=new Schema(
 
 )
 
-userSchema.pre("save",async function name(next) {
-    if(!this.isModified("password")) return next();
-    this.password=await bcrypt.hash(this.password,10)
-})
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
+
+    this.password = await bcrypt.hash(this.password, 10);
+});
 
 userSchema.methods.isPasswordCorrect=async function
 (password){
@@ -61,7 +62,7 @@ userSchema.methods.isPasswordCorrect=async function
 userSchema.methods.generateAccessToken= function(){
     return jwt.sign(
         {
-            _id:this.id,
+            _id:this._id,
             email:this.email,
             username:this.username,
             fullName:this.fullName
@@ -75,7 +76,7 @@ userSchema.methods.generateAccessToken= function(){
 userSchema.methods.generateRefreshToken= function(){
         return jwt.sign(
         {
-            _id:this.id,
+            _id:this._id,
 
         },
         process.env.REFRESH_TOKEN_SECRET,
